@@ -1,0 +1,11 @@
+bench_data.json
+/_build
+/blib
+/.includepath
+/.project
+/Build.PL
+/.includepath
+/.project
+/MYMETA.yml
+log
+ElasticSearch-*
