@@ -8,7 +8,7 @@ use AnyEvent::HTTP qw(http_request);
 use Encode qw(decode_utf8 encode_utf8);
 use ElasticSearch 0.41 ();
 use ElasticSearch::Util qw(build_error);
-use Scalar::Util qw(weaken refaddr);
+use Scalar::Util qw(weaken isweak);
 
 our $VERSION = '0.01';
 
@@ -141,6 +141,7 @@ sub _refresh_servers {
     weaken $queue->[-1];
 
     my $requests = $self->{_requests} ||= [];
+    weaken $self->{_requests} unless isweak $self->{_requests};
     @$requests = () unless grep $_, @$requests;
     return ( @$requests, $cb ) if ( grep $_, @$queue ) > 1;
 
@@ -204,7 +205,7 @@ sub _refresh_servers {
     }
 
     my @requests = @$requests;
-    weaken $requests->[$_] for 0 .. @requests;
+    weaken $requests->[$_] for 0 .. $#requests;
 
     return ( @$requests, $cb );
 }
@@ -351,7 +352,7 @@ sub recv {
 sub DESTROY {
 #===================================
     my $self = shift;
-    if ($ElasticSearch::DEBUG) {
+    if ( $ElasticSearch::DEBUG && $self->{_line} ) {
         print "Destroyed: " . $self->{_line} . "\n";
         delete $CV{ $self->{_line} };
         $destroyed++;
@@ -477,6 +478,8 @@ be executed synchronously.
 =item * L<ElasticSearch::Transport::Curl>
 
 =item * L<ElasticSearch::Transport::AEHTTP>
+
+=item * L<ElasticSearch::Transport::AECurl>
 
 =item * L<ElasticSearch::Transport::Thrift>
 
