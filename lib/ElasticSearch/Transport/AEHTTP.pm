@@ -10,7 +10,7 @@ use Encode qw(decode_utf8 encode_utf8);
 use ElasticSearch::Util qw(build_error);
 use Scalar::Util qw(weaken isweak);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 #===================================
 sub protocol     {'http'}
