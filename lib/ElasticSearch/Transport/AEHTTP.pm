@@ -3,7 +3,7 @@ package ElasticSearch::Transport::AEHTTP;
 use strict;
 use warnings;
 
-use ElasticSearch 0.44 ();
+use ElasticSearch 0.48 ();
 use parent 'ElasticSearch::Transport';
 use AnyEvent::HTTP qw(http_request);
 use Encode qw(decode_utf8 encode_utf8);
@@ -50,7 +50,7 @@ sub _request {
             sub {
                 my $json = shift || '{"ok": true}';
                 if ( my $error = shift ) {
-                    if ( !$s_srvr && $self->_should_retry( $srvr, $error ) ) {
+                    if ( !$s_srvr && $self->should_retry( $srvr, $error ) ) {
                         my @guard;
                         my $next_cb = sub { $weak_req->(@_); @guard = () };
                         return @guard = $self->_next_server($next_cb);
@@ -105,13 +105,13 @@ sub _send_request {
         }
         my $msg = $hdr->{Reason};
 
-        my $type
-            = $code eq '409'                  ? 'Conflict'
-            : $code eq '404'                  ? 'Missing'
-            : $msg  eq 'Connection timed out' ? 'Timeout'
+        my $type = $self->code_to_error($code)
+            || (
+              $msg eq 'Connection timed out' ? 'Timeout'
             : $msg =~ /Broken pipe|Connection (reset by peer|refused)/
             ? 'Connection'
-            : 'Request';
+            : 'Request'
+            );
 
         my $error_params = {
             server      => $server,
