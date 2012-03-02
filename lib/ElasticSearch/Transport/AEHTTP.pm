@@ -3,14 +3,14 @@ package ElasticSearch::Transport::AEHTTP;
 use strict;
 use warnings;
 
-#use ElasticSearch 0.50 ();
+use ElasticSearch 0.50 ();
 use parent 'ElasticSearch::Transport';
 use AnyEvent::HTTP qw(http_request);
 use Encode qw(decode_utf8 encode_utf8);
 use ElasticSearch::Util qw(build_error);
 use Scalar::Util qw(weaken isweak);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 #===================================
 sub protocol     {'http'}
