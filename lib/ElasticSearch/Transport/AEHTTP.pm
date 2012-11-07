@@ -225,7 +225,7 @@ sub _refresh_servers {
         $self->servers( \@servers );
         $self->{_refresh_in} = $self->max_requests - 1;
         %servers = ();
-        return $process_queue->(1);
+        return $process_queue->( \@servers );
     };
 
     foreach my $server (@all_servers) {
