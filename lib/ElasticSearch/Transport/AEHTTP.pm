@@ -11,7 +11,7 @@ use ElasticSearch::Util qw(build_error);
 use Scalar::Util qw(weaken isweak);
 use List::Util qw(shuffle min);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 #===================================
 sub protocol     {'http'}
